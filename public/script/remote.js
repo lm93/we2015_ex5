@@ -2,7 +2,7 @@ var currentImage = 0; // the currently selected image
 var imageCount = 7; // the maximum number of images available
 var socket = io(); //connect;
 
-var myScreen = 'alice';
+var myScreen = '';
 var sequence = 0;
 
 function showImage (index){
@@ -45,19 +45,58 @@ document.addEventListener("DOMContentLoaded", function(event) {
     connectToServer();
 });
 
+
+
+function setScreen(name) {
+    if(myScreen!=name) {
+        myScreen = name;
+        socket.emit('refresh screens');
+        
+        $('#menu li').removeClass('active');
+        $('#menu #'+name).addClass('active');
+    }
+}
+
+
+function clicked(e) {
+    $e = $(e);
+    var name = $e.prop('id');
+    if ($e.hasClass('active')){
+        //alert('deactivating '+name)
+        setScreen(-1);
+    }
+    else {
+        setScreen(name);
+        //alert('activating '+name)
+
+    }
+}
+
+function addButton(name) {
+    if($('#menu #'+name).length == 0){
+        $('#screens').append('<li id="'+name+'" onclick="clicked(this);">'+name+'</li>');
+    }
+}
+function removeButton(name) {
+    $('#screens #'+name).remove();
+}
+
+
+
 function connectToServer(){
     // TODO connect to the socket.io server
     socket.emit('remote connect', 'I\'m a remote');
     
     socket.on('screen connect', function(name){
-        alert(name + ' connected');
+        //alert(name + ' connected');
         if(name==myScreen) {
             socket.emit("select", [myScreen, currentImage]);
         }
     });
     
     socket.on('screen disconnect', function(name){
-        alert(name + ' disconnected');
+        //alert(name + ' disconnected');
+        setScreen(-1)
         
     });
     
@@ -69,12 +108,13 @@ function connectToServer(){
     
     
     socket.on('screen connect', function(name){
-        alert('add '+ name +'to list');
+        addButton(name);
         socket.emit("select", [myScreen, currentImage]);
     });
     
     socket.on('screen disconnect', function(name){
-        alert('remove '+ name +'from list');
+        //alert('remove '+ name +'from list');
+        removeButton(name);
         //sure? count instances?
         //todo give list of screens. New connection?
     });

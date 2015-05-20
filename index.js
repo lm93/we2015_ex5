@@ -20,8 +20,13 @@ app.get('/', function(req, res){
     //res.sendFile(__dirname + '/index.html');
 });
 
-
-
+/*
+function refreshScreens() {
+    sequence++;
+    socket.broadcast.emit('clear screen', sequence);
+    socket.broadcast.emit('resend to screen',sequence);
+}
+*/
 
 
 io.on('connection', function(socket){
@@ -53,12 +58,20 @@ io.on('connection', function(socket){
         });
         socket.on('disconnect', function(){
             console.log('remote disconnected');
+            //refreshScreens();
             sequence++;
             socket.broadcast.emit('clear screen', sequence);
             socket.broadcast.emit('resend to screen',sequence);
             
             n_remotes--;
             printStatus();
+        });
+        
+        socket.on('refresh screens', function() {
+            //refreshScreens();
+            sequence++;
+            socket.broadcast.emit('clear screen', sequence);
+            socket.broadcast.emit('resend to screen',sequence);
         });
     });
     
