@@ -73,7 +73,8 @@ function clicked(e) {
 }
 
 function addButton(name) {
-    if($('#menu #'+name).length == 0){
+    //alert($('#screens #'+name)+' has length '+$('#screens #'+name).length);
+    if($('#screens #'+name).length == 0){
         $('#screens').append('<li id="'+name+'" onclick="clicked(this);">'+name+'</li>');
     }
 }
@@ -89,8 +90,10 @@ function connectToServer(){
     
     socket.on('screen connect', function(name){
         //alert(name + ' connected');
+        addButton(name);
         if(name==myScreen) {
-            socket.emit("select", [myScreen, currentImage]);
+            myScreen=name;
+            socket.emit("select", [myScreen, currentImage, sequence]);
         }
     });
     
@@ -107,10 +110,6 @@ function connectToServer(){
     //socket.emit("select", [myScreen, currentImage]);
     
     
-    socket.on('screen connect', function(name){
-        addButton(name);
-        socket.emit("select", [myScreen, currentImage]);
-    });
     
     socket.on('screen disconnect', function(name){
         //alert('remove '+ name +'from list');

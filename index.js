@@ -69,9 +69,12 @@ io.on('connection', function(socket){
         
         socket.on('refresh screens', function() {
             //refreshScreens();
+            console.log('refresh');
             sequence++;
             socket.broadcast.emit('clear screen', sequence);
-            socket.broadcast.emit('resend to screen',sequence);
+            //socket.broadcast.emit('resend to screen',sequence);
+            //bug here: didn't refresh self!
+            io.emit('resend to screen',sequence);
         });
     });
     
