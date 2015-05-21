@@ -49,6 +49,8 @@ io.on('connection', function(socket){
         console.log('message: ' + msg);
         //todo send all screens
         //forall screens as name socket.emit('screen connect', name);
+        io.emit('if youre a screen and you know it, clap your hands');
+        
         n_remotes++;
         printStatus();
         

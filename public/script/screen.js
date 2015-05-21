@@ -55,6 +55,12 @@ function connectToServer(){
     // TODO connect to the socket.io server
     //connect
     socket.emit('screen connect', devicename);
+    
+    socket.on('if youre a screen and you know it, clap your hands', function(){
+        //alert(devicename+' in da house');
+        socket.emit('screen connect', devicename);
+    });
+    
     socket.on('select '+devicename, function(msg){
         sequence = msg[1];
         showImage(msg[0]);
