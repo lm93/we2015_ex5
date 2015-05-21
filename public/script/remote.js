@@ -12,9 +12,11 @@ function showImage (index){
     document.querySelector("img.selected").classList.toggle("selected");
     images[index].classList.toggle("selected");
 
-    // Send the command to the screen
-    // TODO
-    socket.emit("select", [myScreen, currentImage, sequence]);
+    
+    //socket.emit("select", [myScreen, currentImage, sequence]);
+    $('#screens .active').each(function(i){
+        socket.emit("select", [$(this).prop('id'), currentImage, sequence]);
+    });
 }
 
 function initialiseGallery(){
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 
-
+/*
 function setScreen(name) {
     if(myScreen!=name) {
         myScreen = name;
@@ -55,21 +57,16 @@ function setScreen(name) {
         $('#menu li').removeClass('active');
         $('#menu #'+name).addClass('active');
     }
-}
+}*/
 
 
 function clicked(e) {
     $e = $(e);
     var name = $e.prop('id');
-    if ($e.hasClass('active')){
-        //alert('deactivating '+name)
-        setScreen(-1);
-    }
-    else {
-        setScreen(name);
-        //alert('activating '+name)
-
-    }
+    $e.toggleClass('active');
+        
+    socket.emit('refresh screens');
+    
 }
 
 function addButton(name) {
@@ -97,11 +94,12 @@ function connectToServer(){
         }
     });
     
+    /* no longer necessary, since li is removed
     socket.on('screen disconnect', function(name){
         //alert(name + ' disconnected');
         setScreen(-1)
-        
     });
+    */
     
     
     
@@ -114,13 +112,13 @@ function connectToServer(){
     socket.on('screen disconnect', function(name){
         //alert('remove '+ name +'from list');
         removeButton(name);
-        //sure? count instances?
-        //todo give list of screens. New connection?
     });
     
     socket.on('resend to screen', function(seq){
         sequence = seq;
-        socket.emit("select", [myScreen, currentImage, sequence]);
+        $('#screens .active').each(function(i){
+            socket.emit("select", [$(this).prop('id'), currentImage, sequence]);
+        });
     });
     
     

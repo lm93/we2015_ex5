@@ -68,7 +68,7 @@ function connectToServer(){
     });
     socket.on('are you there', function(name){
         if(name==devicename){
-            alert('i\'m over here!');
+            //alert('i\'m over here!');
             socket.emit('screen connect', devicename);
         }
     });

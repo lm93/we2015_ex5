@@ -34,6 +34,7 @@ io.on('connection', function(socket){
     
     //SCREEN
     socket.on('screen connect', function(name){
+        io.emit('resend to screen',sequence);
         console.log(name + ' connected');
         io.emit('screen connect', name);
         socket.on('disconnect', function(){
